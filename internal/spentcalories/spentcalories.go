@@ -64,7 +64,18 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 }
 
 func RunningSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
-	// TODO: реализовать функцию
+	var averageSpeed float64
+	var spentCalories float64
+
+	isDataCorrect := steps > 0 && weight > 0 && height > 0 && duration > 0
+	if !isDataCorrect {
+		return 0, ErrInvalidArguments
+	}
+
+	averageSpeed = meanSpeed(steps, height, duration)
+	spentCalories = weight * averageSpeed * duration.Minutes() / minInH
+
+	return spentCalories, nil
 }
 
 func WalkingSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
