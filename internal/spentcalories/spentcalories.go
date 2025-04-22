@@ -1,6 +1,9 @@
 package spentcalories
 
 import (
+	"errors"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -13,8 +16,34 @@ const (
 	walkingCaloriesCoefficient = 0.5  // коэффициент для расчета калорий при ходьбе
 )
 
+var (
+	ErrInvalidArguments = errors.New("invalid arguments")
+	ErrInvalidFormat    = errors.New("invalid format")
+)
+
 func parseTraining(data string) (int, string, time.Duration, error) {
-	// TODO: реализовать функцию
+	var steps int
+	var activityType string
+	var duration time.Duration
+
+	trainingData := strings.Split(data, ",")
+	if len(trainingData) != 3 {
+		return 0, "", time.Duration(0), ErrInvalidArguments
+	}
+
+	steps, err := strconv.Atoi(trainingData[0])
+	if err != nil {
+		return 0, "", time.Duration(0), ErrInvalidFormat
+	}
+
+	activityType = trainingData[1]
+
+	duration, err = time.ParseDuration(trainingData[2])
+	if err != nil {
+		return 0, "", time.Duration(0), ErrInvalidFormat
+	}
+
+	return steps, activityType, duration, nil
 }
 
 func distance(steps int, height float64) float64 {
