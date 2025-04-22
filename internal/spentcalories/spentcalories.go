@@ -2,6 +2,7 @@ package spentcalories
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -17,8 +18,9 @@ const (
 )
 
 var (
-	ErrInvalidArguments = errors.New("invalid arguments")
-	ErrInvalidFormat    = errors.New("invalid format")
+	ErrInvalidArguments    = errors.New("invalid arguments")
+	ErrInvalidFormat       = errors.New("invalid format")
+	ErrUnknownTrainingType = errors.New("неизвестный тип тренировки")
 )
 
 func parseTraining(data string) (int, string, time.Duration, error) {
@@ -60,7 +62,43 @@ func meanSpeed(steps int, height float64, duration time.Duration) float64 {
 }
 
 func TrainingInfo(data string, weight, height float64) (string, error) {
-	// TODO: реализовать функцию
+	var trainingDistance float64
+	var averageSpeed float64
+	var spentCalories float64
+	var trainingInfo string
+
+	steps, activityType, duration, err := parseTraining(data)
+	if err != nil {
+		return "", ErrInvalidArguments
+	}
+
+	switch activityType {
+	case "Бег":
+		trainingDistance = distance(steps, height)
+		averageSpeed = meanSpeed(steps, height, duration)
+		spentCalories, err = RunningSpentCalories(steps, weight, height, duration)
+		if err != nil {
+			return "", err
+		}
+	case "Ходьба":
+		trainingDistance = distance(steps, height)
+		averageSpeed = meanSpeed(steps, height, duration)
+		spentCalories, err = WalkingSpentCalories(steps, weight, height, duration)
+		if err != nil {
+			return "", err
+		}
+	default:
+		return "", ErrUnknownTrainingType
+	}
+
+	hours := int(duration.Hours())
+	minutes := int(duration.Minutes()) % 60
+
+	durationFormatted := fmt.Sprintf("%d.%02d", hours, minutes)
+
+	trainingInfo = fmt.Sprintf("Тип тренировки: %s\nДлительность: %s ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f",
+		activityType, durationFormatted, trainingDistance, averageSpeed, spentCalories)
+	return trainingInfo, nil
 }
 
 func RunningSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
