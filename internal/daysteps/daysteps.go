@@ -42,6 +42,10 @@ func parsePackage(data string) (int, time.Duration, error) {
 		return 0, 0, ErrInvalidFormat
 	}
 
+	if steps <= 0 || duration <= 0 {
+		return 0, 0, ErrInvalidArguments
+	}
+
 	return steps, duration, nil
 }
 
