@@ -45,6 +45,10 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 		return 0, "", time.Duration(0), ErrInvalidFormat
 	}
 
+	if steps <= 0 || duration <= 0 {
+		return 0, "", time.Duration(0), ErrInvalidArguments
+	}
+
 	return steps, activityType, duration, nil
 }
 
