@@ -95,10 +95,8 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 		return "", ErrUnknownTrainingType
 	}
 
-	hours := int(duration.Hours())
-	minutes := int(duration.Minutes()) % 60
-
-	durationFormatted := fmt.Sprintf("%d.%02d", hours, minutes)
+	totalHours := duration.Hours()
+	durationFormatted := fmt.Sprintf("%.2f", totalHours)
 
 	trainingInfo = fmt.Sprintf("Тип тренировки: %s\nДлительность: %s ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n",
 		activityType, durationFormatted, trainingDistance, averageSpeed, spentCalories)
