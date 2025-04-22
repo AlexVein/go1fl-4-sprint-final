@@ -3,6 +3,7 @@ package daysteps
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -51,11 +52,12 @@ func DayActionInfo(data string, weight, height float64) string {
 
 	steps, duration, err := parsePackage(data)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return ""
 	}
 
-	if steps <= 0 {
+	if steps <= 0 || duration <= 0 {
+		log.Println(ErrInvalidArguments)
 		return ""
 	}
 
@@ -64,7 +66,7 @@ func DayActionInfo(data string, weight, height float64) string {
 
 	spentCalories, err = spentcalories.WalkingSpentCalories(steps, weight, height, duration)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(ErrInvalidArguments)
 		return ""
 	}
 
