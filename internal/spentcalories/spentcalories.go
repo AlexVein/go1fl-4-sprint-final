@@ -100,7 +100,7 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 
 	durationFormatted := fmt.Sprintf("%d.%02d", hours, minutes)
 
-	trainingInfo = fmt.Sprintf("Тип тренировки: %s\nДлительность: %s ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f",
+	trainingInfo = fmt.Sprintf("Тип тренировки: %s\nДлительность: %s ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n",
 		activityType, durationFormatted, trainingDistance, averageSpeed, spentCalories)
 	return trainingInfo, nil
 }
