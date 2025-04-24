@@ -81,17 +81,16 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 		return "", err
 	}
 
+	trainingDistance = distance(steps, height)
+	averageSpeed = meanSpeed(steps, height, duration)
+
 	switch activityType {
 	case "Бег":
-		trainingDistance = distance(steps, height)
-		averageSpeed = meanSpeed(steps, height, duration)
 		spentCalories, err = RunningSpentCalories(steps, weight, height, duration)
 		if err != nil {
 			return "", err
 		}
 	case "Ходьба":
-		trainingDistance = distance(steps, height)
-		averageSpeed = meanSpeed(steps, height, duration)
 		spentCalories, err = WalkingSpentCalories(steps, weight, height, duration)
 		if err != nil {
 			return "", err
