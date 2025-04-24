@@ -19,8 +19,10 @@ const (
 )
 
 var (
-	ErrInvalidArguments = errors.New("invalid arguments")
-	ErrInvalidFormat    = errors.New("invalid format")
+	ErrInvalidArguments      = errors.New("invalid arguments")
+	ErrInvalidArgumentsCount = errors.New("invalid arguments count")
+	ErrInvalidFormat         = errors.New("invalid format")
+	ErrZeroOrNegativeValue   = errors.New("zero or negative value")
 )
 
 func parsePackage(data string) (int, time.Duration, error) {
@@ -29,21 +31,25 @@ func parsePackage(data string) (int, time.Duration, error) {
 
 	trainingRecord := strings.Split(data, ",")
 	if len(trainingRecord) != 2 {
-		return 0, 0, ErrInvalidArguments
+		return 0, 0, fmt.Errorf("%w: %s", ErrInvalidArgumentsCount, data)
 	}
 
 	steps, err := strconv.Atoi(trainingRecord[0])
 	if err != nil {
-		return 0, 0, ErrInvalidFormat
+		return 0, 0, fmt.Errorf("%w: %s", ErrInvalidFormat, trainingRecord[0])
 	}
 
 	duration, err = time.ParseDuration(trainingRecord[1])
 	if err != nil {
-		return 0, 0, ErrInvalidFormat
+		return 0, 0, fmt.Errorf("%w: %s", ErrInvalidFormat, trainingRecord[1])
 	}
 
-	if steps <= 0 || duration <= 0 {
-		return 0, 0, ErrInvalidArguments
+	if steps <= 0 {
+		return 0, 0, fmt.Errorf("%w: %d", ErrZeroOrNegativeValue, steps)
+	}
+
+	if duration <= 0 {
+		return 0, 0, fmt.Errorf("%w: %s", ErrZeroOrNegativeValue, duration)
 	}
 
 	return steps, duration, nil
@@ -60,8 +66,13 @@ func DayActionInfo(data string, weight, height float64) string {
 		return ""
 	}
 
-	if steps <= 0 || duration <= 0 {
-		log.Println(ErrInvalidArguments)
+	if steps <= 0 {
+		log.Println(ErrZeroOrNegativeValue)
+		return ""
+	}
+
+	if duration <= 0 {
+		log.Println(ErrZeroOrNegativeValue)
 		return ""
 	}
 

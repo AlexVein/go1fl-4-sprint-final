@@ -18,9 +18,10 @@ const (
 )
 
 var (
-	ErrInvalidArguments    = errors.New("invalid arguments")
-	ErrInvalidFormat       = errors.New("invalid format")
-	ErrUnknownTrainingType = errors.New("неизвестный тип тренировки")
+	ErrInvalidArgumentsCount = errors.New("invalid arguments count")
+	ErrInvalidFormat         = errors.New("invalid format")
+	ErrZeroOrNegativeValue   = errors.New("zero or negative value")
+	ErrUnknownTrainingType   = errors.New("неизвестный тип тренировки")
 )
 
 func parseTraining(data string) (int, string, time.Duration, error) {
@@ -30,23 +31,27 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 
 	trainingData := strings.Split(data, ",")
 	if len(trainingData) != 3 {
-		return 0, "", time.Duration(0), ErrInvalidArguments
+		return 0, "", time.Duration(0), fmt.Errorf("%w: %s", ErrInvalidArgumentsCount, data)
 	}
 
 	steps, err := strconv.Atoi(trainingData[0])
 	if err != nil {
-		return 0, "", time.Duration(0), ErrInvalidFormat
+		return 0, "", time.Duration(0), fmt.Errorf("%w: %s", ErrInvalidFormat, trainingData[0])
 	}
 
 	activityType = trainingData[1]
 
 	duration, err = time.ParseDuration(trainingData[2])
 	if err != nil {
-		return 0, "", time.Duration(0), ErrInvalidFormat
+		return 0, "", time.Duration(0), fmt.Errorf("%w: %s", ErrInvalidFormat, trainingData[2])
 	}
 
-	if steps <= 0 || duration <= 0 {
-		return 0, "", time.Duration(0), ErrInvalidArguments
+	if steps <= 0 {
+		return 0, "", time.Duration(0), fmt.Errorf("%w: %d", ErrZeroOrNegativeValue, steps)
+	}
+
+	if duration <= 0 {
+		return 0, "", time.Duration(0), fmt.Errorf("%w: %s", ErrZeroOrNegativeValue, duration)
 	}
 
 	return steps, activityType, duration, nil
@@ -73,7 +78,7 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 
 	steps, activityType, duration, err := parseTraining(data)
 	if err != nil {
-		return "", ErrInvalidArguments
+		return "", err
 	}
 
 	switch activityType {
@@ -92,7 +97,7 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 			return "", err
 		}
 	default:
-		return "", ErrUnknownTrainingType
+		return "", fmt.Errorf("%w: %s", ErrUnknownTrainingType, activityType)
 	}
 
 	totalHours := duration.Hours()
@@ -107,9 +112,20 @@ func RunningSpentCalories(steps int, weight, height float64, duration time.Durat
 	var averageSpeed float64
 	var spentCalories float64
 
-	isDataCorrect := steps > 0 && weight > 0 && height > 0 && duration > 0
-	if !isDataCorrect {
-		return 0, ErrInvalidArguments
+	if steps < 0 {
+		return 0, fmt.Errorf("%w: %d", ErrZeroOrNegativeValue, steps)
+	}
+
+	if duration <= 0 {
+		return 0, fmt.Errorf("%w: %s", ErrZeroOrNegativeValue, duration)
+	}
+
+	if weight < 0 {
+		return 0, fmt.Errorf("%w: %s", ErrZeroOrNegativeValue, weight)
+	}
+
+	if height < 0 {
+		return 0, fmt.Errorf("%w: %s", ErrZeroOrNegativeValue, height)
 	}
 
 	averageSpeed = meanSpeed(steps, height, duration)
@@ -122,9 +138,20 @@ func WalkingSpentCalories(steps int, weight, height float64, duration time.Durat
 	var averageSpeed float64
 	var spentCalories float64
 
-	isDataCorrect := steps > 0 && weight > 0 && height > 0 && duration > 0
-	if !isDataCorrect {
-		return 0, ErrInvalidArguments
+	if steps < 0 {
+		return 0, fmt.Errorf("%w: %d", ErrZeroOrNegativeValue, steps)
+	}
+
+	if duration <= 0 {
+		return 0, fmt.Errorf("%w: %s", ErrZeroOrNegativeValue, duration)
+	}
+
+	if weight < 0 {
+		return 0, fmt.Errorf("%w: %s", ErrZeroOrNegativeValue, weight)
+	}
+
+	if height < 0 {
+		return 0, fmt.Errorf("%w: %s", ErrZeroOrNegativeValue, height)
 	}
 
 	averageSpeed = meanSpeed(steps, height, duration)
