@@ -111,7 +111,7 @@ func RunningSpentCalories(steps int, weight, height float64, duration time.Durat
 	var averageSpeed float64
 	var spentCalories float64
 
-	if steps < 0 {
+	if steps <= 0 {
 		return 0, fmt.Errorf("%w: %d", ErrZeroOrNegativeValue, steps)
 	}
 
@@ -119,12 +119,12 @@ func RunningSpentCalories(steps int, weight, height float64, duration time.Durat
 		return 0, fmt.Errorf("%w: %s", ErrZeroOrNegativeValue, duration)
 	}
 
-	if weight < 0 {
-		return 0, fmt.Errorf("%w: %s", ErrZeroOrNegativeValue, weight)
+	if weight <= 0 {
+		return 0, fmt.Errorf("%w: %f", ErrZeroOrNegativeValue, weight)
 	}
 
-	if height < 0 {
-		return 0, fmt.Errorf("%w: %s", ErrZeroOrNegativeValue, height)
+	if height <= 0 {
+		return 0, fmt.Errorf("%w: %f", ErrZeroOrNegativeValue, height)
 	}
 
 	averageSpeed = meanSpeed(steps, height, duration)
@@ -137,7 +137,7 @@ func WalkingSpentCalories(steps int, weight, height float64, duration time.Durat
 	var averageSpeed float64
 	var spentCalories float64
 
-	if steps < 0 {
+	if steps <= 0 {
 		return 0, fmt.Errorf("%w: %d", ErrZeroOrNegativeValue, steps)
 	}
 
@@ -145,12 +145,12 @@ func WalkingSpentCalories(steps int, weight, height float64, duration time.Durat
 		return 0, fmt.Errorf("%w: %s", ErrZeroOrNegativeValue, duration)
 	}
 
-	if weight < 0 {
-		return 0, fmt.Errorf("%w: %s", ErrZeroOrNegativeValue, weight)
+	if weight <= 0 {
+		return 0, fmt.Errorf("%w: %f", ErrZeroOrNegativeValue, weight)
 	}
 
-	if height < 0 {
-		return 0, fmt.Errorf("%w: %s", ErrZeroOrNegativeValue, height)
+	if height <= 0 {
+		return 0, fmt.Errorf("%w: %f", ErrZeroOrNegativeValue, height)
 	}
 
 	averageSpeed = meanSpeed(steps, height, duration)
