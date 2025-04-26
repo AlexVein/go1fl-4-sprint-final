@@ -39,13 +39,13 @@ func parsePackage(data string) (int, time.Duration, error) {
 		return 0, 0, fmt.Errorf("%w: %s", ErrInvalidFormat, trainingRecord[0])
 	}
 
+	if steps <= 0 {
+		return 0, 0, fmt.Errorf("%w: %d", ErrZeroOrNegativeValue, steps)
+	}
+
 	duration, err = time.ParseDuration(trainingRecord[1])
 	if err != nil {
 		return 0, 0, fmt.Errorf("%w: %s", ErrInvalidFormat, trainingRecord[1])
-	}
-
-	if steps <= 0 {
-		return 0, 0, fmt.Errorf("%w: %d", ErrZeroOrNegativeValue, steps)
 	}
 
 	if duration <= 0 {
